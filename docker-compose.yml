@@ -5,36 +5,41 @@ services:
     image: postgres:15
     container_name: chat-app-db
     environment:
-      POSTGRES_DB: chatapp
-      POSTGRES_USER: chatuser
-      POSTGRES_PASSWORD: chatpass
+      - POSTGRES_DB=chatapp
+      - POSTGRES_USER=chatuser
+      - POSTGRES_PASSWORD=chatpass
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U chatuser"]
+      test: ["CMD-SHELL", "pg_isready -U chatuser -d chatapp"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: always
 
   app:
-    image: openjdk:17-jdk-slim
+    build: .
     container_name: chat-app
-    build:
-      context: .
-      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/chatapp
+      - SPRING_DATASOURCE_USERNAME=chatuser
+      - SPRING_DATASOURCE_PASSWORD=chatpass
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
     depends_on:
       postgres:
         condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/chatapp
-      SPRING_DATASOURCE_USERNAME: chatuser
-      SPRING_DATASOURCE_PASSWORD: chatpass
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: true
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   postgres_data:

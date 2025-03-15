@@ -21,4 +21,5 @@ WORKDIR /app
 COPY --from=build /app/target/ChatappApi-0.0.1-SNAPSHOT.jar app.jar
 
 # Запускаем приложение
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
