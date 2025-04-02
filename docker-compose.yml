@@ -12,7 +12,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres:/var/lib/postgresql/data
-      # Монтируем папку с CSV файлами внутрь контейнера
+      # Монтируем папку с CSV файлами внутрь контейнер
       - ./src/main/resources/db/data:/docker-entrypoint-initdb.d/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U chatuser -d chatapp"]
