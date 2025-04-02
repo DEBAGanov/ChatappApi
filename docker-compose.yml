@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - ./postgres-data:/var/lib/postgresql/data
       # Монтируем папку с CSV файлами внутрь контейнер
       - ./src/main/resources/db/data:/docker-entrypoint-initdb.d/data
     healthcheck:
@@ -20,6 +20,7 @@ services:
       timeout: 5s
       retries: 5
     restart: always
+
 
   app:
     build: .
@@ -43,5 +44,9 @@ services:
       timeout: 5s
       retries: 3
 
+
 volumes:
-  postgres_data:
+  postgres-data:
+networks:
+  app-network:
+    driver: bridge`
