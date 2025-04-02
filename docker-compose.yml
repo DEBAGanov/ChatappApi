@@ -1,4 +1,4 @@
-version: "3.3"
+version: "2.8"
 
 services:
   postgres:
@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       # Монтируем папку с CSV файлами внутрь контейнера
       - ./src/main/resources/db/data:/docker-entrypoint-initdb.d/data
     healthcheck:
@@ -42,3 +42,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+
+volumes:
+  postgres_data:
