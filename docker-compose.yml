@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3"
 
 services:
   postgres:
@@ -10,17 +10,7 @@ services:
       - POSTGRES_PASSWORD=chatpass
     ports:
       - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      # Монтируем папку с CSV файлами внутрь контейнер
-      - ./src/main/resources/db/data:/docker-entrypoint-initdb.d/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U chatuser -d chatapp"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     restart: always
-
 
   app:
     build: .
@@ -35,18 +25,11 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_JPA_SHOW_SQL=true
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
 
 volumes:
   postgres-data:
 networks:
   app-network:
-    driver: bridge`
+    driver: bridge
