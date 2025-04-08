@@ -12,7 +12,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Используем образ OpenJDK для запуска приложения
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-slim
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
