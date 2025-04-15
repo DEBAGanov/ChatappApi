@@ -29,6 +29,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=chatpass
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_JPA_SHOW_SQL=true
+      - JAVA_OPTS=-Xmx512m
     depends_on:
       postgres:
         condition: service_healthy
