@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3"
 
 services:
   postgres:
@@ -10,11 +10,6 @@ services:
       - POSTGRES_PASSWORD=chatpass
     ports:
       - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U chatuser -d chatapp"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     restart: always
 
   app:
@@ -31,11 +26,11 @@ services:
       - SPRING_JPA_SHOW_SQL=true
       - JAVA_OPTS=-Xmx512m
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+
+volumes:
+  postgres-data:
+networks:
+  app-network:
+    driver: bridge
